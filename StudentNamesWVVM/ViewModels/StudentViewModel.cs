@@ -10,6 +10,15 @@ namespace StudentNamesWVVM.ViewModels
 {
     internal class StudentViewModel
     {
+
+        public MyICommand DeleteCommand { get; set; }
+
+        public StudentViewModel()
+        {
+            LoadStudents();
+            DeleteCommand = new MyICommand(OnDelete, CanDelete);
+        }
+
         public ObservableCollection<Student> Students { get; set; }
 
         public void LoadStudents()
@@ -22,6 +31,32 @@ namespace StudentNamesWVVM.ViewModels
             students.Add(new Student { FirstName = "Taly", LastName = "Golan" });
 
             Students = students;
+        }
+
+
+        private Student _selectedStudent;
+
+        public Student SelectedStudent
+        {
+            get { return _selectedStudent; }
+            set { 
+                _selectedStudent = value;
+                DeleteCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+
+
+
+
+        private bool CanDelete()
+        {
+            return SelectedStudent != null;
+        }
+
+        private void OnDelete()
+        {
+            Students.Remove(SelectedStudent);
         }
     }
 }
